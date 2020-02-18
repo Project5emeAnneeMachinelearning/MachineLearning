@@ -21,41 +21,34 @@ extern "C"{
 class Model {
 public:
     // NB DENTREE +1
-    double* weightArray;
+    double* model;
     int weightSize;
-    Matrix2d mat ;
     //Créee un tableau de poid entre -1 et 1 Random ??
     // TOUTE LES FONCTIONS DOIVENT AVOIR LE POINTEUR DU MODEL POUR POUVOIR LE MODIFIER
-    Model(double** entryValue,int weightSize){
-        /*this->entryValue = (double**) malloc(sizeof(double*)*listsize);
-        for(int i =0;i<arraysize;i++){
-            this->entryValue[i] = (double*) malloc(sizeof(double*)*arraysize);
-        }*/
-        this->weightSize = weightSize+1;
+    Model(int weightSize){
         srand(time(NULL));
-        this->weightArray = (double *) malloc(sizeof(int*)*weightSize+1);
-        for(int i =0;i<weightSize;i++){
+        this->model = (double *) malloc(sizeof(int*) * weightSize + 1);
+        this->weightSize = weightSize+1;
+        for(int i =0;i<weightSize+1;i++){
             double weight = fRand(-1.0,1.0);
-            weightArray[i] =weight;
+            this->model[i] =weight;
         }
-        weightArray[0]=1;
     }
     //somme pondéré pedict regression
     //sign
     double predict_regression(double * values){
         double result = 0;
         for (int i=0; i<weightSize;i++){
-            result += values[i] * weightArray[i];
+            result += values[i] * model[i];
         }
         return result;
     }
 
     double predict_lineaire(double * values){
-        //SIGN
         return signbit(predict_regression(values));
     }
 
-    void train(double ** dataset,double * expected_output,int sizedataset,double pas,int sizeIndice){
+    void train_classification(double ** dataset,double * expected_output,int sizedataset,double pas,int sizeIndice){
         // pour X iter
         //  Appliquer regle de rosenblatt
         // k étant un echantillon
@@ -65,11 +58,17 @@ public:
         for(int i=0; i<sizedataset;i++){
             dataset[i] = add_biais(dataset[i],sizeIndice);
             double * modelAlteration = array_multiply(dataset[i],pas*(expected_output[i]-predict_regression(dataset[i])),sizeIndice);
-            weightArray = array_addition(weightArray,modelAlteration,sizeIndice);
+            model = array_addition(model, modelAlteration, sizeIndice);
         }
     }
 
-    double fRand(double fMin, double fMax)
+    void train_regression(double ** dataset,double ** expected_output,int sizedataset,double pas,int sizeIndice) {
+       // (Transpose(X)*X)Y
+       auto input_matrix = array_to_matrix(dataset,sizedataset);
+        (((input_matrix.transpose()*input_matrix).inverse())*input_matrix.transpose());
+    }
+
+        double fRand(double fMin, double fMax)
     {
         double f = (double)rand() / RAND_MAX;
         return fMin + f * (fMax - fMin);
@@ -102,6 +101,17 @@ public:
         for (int i = 0;i<size;i++){
             result[i+1] = array[i];
         }
+    }
+    MatrixXd array_to_matrix(double** arr, int len) {
+
+        MatrixXd mat = MatrixXd(len / 2, 3);
+
+        for(int i= 0; i<len;i++)
+        {
+            mat << Vector3d(arr[i][0], arr[i][1], arr[i][2]);
+        }
+
+        return mat;
     }
 };
 

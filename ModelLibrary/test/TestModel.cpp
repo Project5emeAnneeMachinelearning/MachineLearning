@@ -5,13 +5,8 @@
 #include <gtest/gtest.h>
 
 TEST(Model,untest) {
-    double arr[2][3] =
-            {
-                    {1,8,12},
-                    {5,9,13}
-            };
     //Model* model = new Model((double **)arr, 3);
-    ASSERT_EQ(6, 6);
+    ASSERT_EQ(8, 6);
 }
 
 
