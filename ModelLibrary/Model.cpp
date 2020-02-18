@@ -48,21 +48,25 @@ public:
         return signbit(predict_regression(values));
     }
 
-    void train_classification(double ** dataset,double * expected_output,int sizedataset,double pas,int sizeIndice){
+    void train_classification(double ** dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
         // pour X iter
         //  Appliquer regle de rosenblatt
         // k étant un echantillon
         // W + a(Y^K-g(X^k))X^k
         // V4 + (double * V4)
         //          V4
-        for(int i=0; i<sizedataset;i++){
-            dataset[i] = add_biais(dataset[i],sizeIndice);
-            double * modelAlteration = array_multiply(dataset[i],pas*(expected_output[i]-predict_regression(dataset[i])),sizeIndice);
-            model = array_addition(model, modelAlteration, sizeIndice);
+        for(int j=0 ;j<epoch;j++) {
+            for (int i = 0; i < sizedataset; i++) {
+                dataset[i] = add_biais(dataset[i], sizeIndice);
+                double *modelAlteration = array_multiply(dataset[i],
+                                                         pas * (expected_output[i] - predict_regression(dataset[i])),
+                                                         sizeIndice);
+                model = array_addition(model, modelAlteration, sizeIndice);
+            }
         }
     }
 
-    void train_regression(double ** dataset,double ** expected_output,int sizedataset,double pas,int sizeIndice) {
+    void train_regression(double ** dataset,double ** expected_output,int sizedataset,double pas,int sizeIndice,int epoch) {
        // (Transpose(X)*X)Y
        auto input_matrix = array_to_matrix(dataset,sizedataset);
         (((input_matrix.transpose()*input_matrix).inverse())*input_matrix.transpose());
@@ -113,6 +117,28 @@ public:
 
         return mat;
     }
+
 };
 
+
+   Model create(int indiceNumber){
+      auto model = Model(indiceNumber);
+      return model;
+   }
+
+   int train_classif(Model* model,double ** dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
+        model->train_classification(dataset,expected_output,sizedataset,pas,sizeIndice,epoch);
+   }
+
+    int train_regression(Model* model,double ** dataset,double ** expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
+        model->train_regression(dataset,expected_output,sizedataset,pas,sizeIndice,epoch);
+    }
+
+    int predict_regression(Model* model ,double * values){
+       return model->predict_regression(values);
+   }
+
+    int predict_classif(Model* model ,double * values){
+        return model->predict_lineaire(values);
+    }
 }
