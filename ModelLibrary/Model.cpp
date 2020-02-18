@@ -3,3 +3,12 @@
 //
 
 #include "Model.h"
+
+
+extern "C"{
+   int GiveMe42FromC() {
+         return 42;
+    }
+
+
+}

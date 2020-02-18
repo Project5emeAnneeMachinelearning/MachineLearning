@@ -6,8 +6,70 @@
 #define MACHINELEARNING_LIB_H
 
 
-class Model {
+#include <cstdlib>
+#include <time.h>
+#include <cmath>
+#include "Eigen/Dense"
 
+using namespace Eigen;
+
+class Model {
+    public:
+        // NB DENTREE +1
+        double* weightArray;
+        int weightSize;
+        Matrix2d mat ;
+        //Créee un tableau de poid entre -1 et 1 Random ??
+        // TOUTE LES FONCTIONS DOIVENT AVOIR LE POINTEUR DU MODEL POUR POUVOIR LE MODIFIER
+        Model(double** entryValue,int weightSize){
+            /*this->entryValue = (double**) malloc(sizeof(double*)*listsize);
+            for(int i =0;i<arraysize;i++){
+                this->entryValue[i] = (double*) malloc(sizeof(double*)*arraysize);
+            }*/
+            this->weightSize = weightSize+1;
+            srand(time(NULL));
+            this->weightArray = (double *) malloc(sizeof(int*)*weightSize+1);
+            double weight = fRand(-1.0,1.0);
+        }
+        //somme pondéré pedict regression
+        //sign
+        double predict_regression(double * values){
+            double result = 0;
+            for (int i=0; i<weightSize;i++){
+                result += values[i] * weightArray[i];
+            }
+            return result;
+        }
+
+    double predict_lineaire(double * values){
+        //SIGN
+        return sigmoid(predict_regression(values));
+    }
+
+    void train(double * dataset,double * expected_output,int sizedataset,double pas){
+            // pour X iter
+            //  Appliquer regle de rosenblatt
+            // k étant un echantillon
+            // W + a(Y^K-g(X^k))X^
+            // V4 + (double * V4)
+            //          V4
+            for(int i=0; i<sizedataset;i++){
+                weightArray = (pas*(dataset[i])-predict_regression(dataset[i]))*dataset[i];
+                predict_regression(dataset[i]);
+            }
+            Map<MatrixXd> X=33 ;
+        }
+
+        double fRand(double fMin, double fMax)
+        {
+            double f = (double)rand() / RAND_MAX;
+            return fMin + f * (fMax - fMin);
+        }
+
+        double sigmoid(double x)
+        {
+            return 1.0 / (1.0 + exp(-x));
+        }
 };
 
 
