@@ -141,4 +141,8 @@ public:
     int predict_classif(Model* model ,double * values){
         return model->predict_lineaire(values);
     }
+
+    int main(int argc, char **argv) {
+        printf("coucou");
+    }
 }
