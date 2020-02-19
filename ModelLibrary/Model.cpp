@@ -79,18 +79,17 @@ public:
         //          V4
         for(int j=0 ;j<epoch;j++) {
                 int example = rand()% sizedataset/sizeIndice;
-                double * array = (double *)malloc(sizeIndice+1*sizeof(double));
+                double array[sizeIndice+1];
                 array[0]=1;
                 for(int z=0;z<sizeIndice;z++){
                     array[z+1] = dataset[example*sizeIndice+z];
                 }
-                print_array(array,sizeIndice+1);
-                double *modelAlteration = array_multiply(array,
+                 array_multiply(array,
                                                          pas * (expected_output[example] - predict_lineaire(array)),
                                                          sizeIndice+1);
                 ;
-                model = array_addition(model, modelAlteration, sizeIndice+1);
-                //print_array(modelAlteration,sizeIndice+1);
+                array_addition(model, array, sizeIndice+1);
+               
         }
     }
 
@@ -127,35 +126,18 @@ public:
         return 1.0 / (1.0 + exp(-x));
     }
 
-    double* array_addition(double* array1,double* array2,int size){
-        double * result = (double*)malloc(sizeof(double)*size);
+    void array_addition(double* array1,double* array2,int size){
         for(int i =0;i<size;i++){
-            result[i] = array1[i] + array2[i];
+            array1[i] += array2[i];
         }
-        return result;
     }
 
-    double* array_multiply(double * array1,double factor,int size){
-        double * result = (double*)malloc(sizeof(double)*size);
+    void array_multiply(double * array1,double factor,int size){
+
         for(int i =0;i<size;i++){
-            result[i] = array1[i]*factor;
-        }
-        return result;
-    }
-
-    double * add_biais(double * array,int size){
-        double result[size+1];
-        result[0]=0;
-        for (int i = 0;i<size;i++){
-            result[i+1] = array[i];
+            array1[i] = array1[i]*factor;
         }
     }
-
-
-    void print_matrix(MatrixXd mat){
-        cout <<  mat << endl;
-    }
-
 };
 
 
@@ -210,7 +192,7 @@ public:
 
         model->printmodel();
         //train_regression(model, trainingInputs, trainingExpectedOutputs, 4,  2);
-        train_classif(model, trainingInputs, trainingExpectedOutputs, 6, 0.01,  2, 100);
+        train_classif(model, trainingInputs, trainingExpectedOutputs, 6, 0.01,  2, 100000000);
         //model->pre
         model->printmodel();
         //printf("%f",model->predict_lineaire(predict))    ;
