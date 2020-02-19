@@ -28,7 +28,8 @@ public:
     // TOUTE LES FONCTIONS DOIVENT AVOIR LE POINTEUR DU MODEL POUR POUVOIR LE MODIFIER
     Model(int weightSize){
         srand(time(NULL));
-        this->model = (double *) malloc(sizeof(int*) * weightSize + 1);
+        this->model = new double[weightSize + 1];
+//        this->model = (double *) malloc(sizeof(double) * (weightSize + 1));
         this->weightSize = weightSize+1;
         for(int i =0;i<weightSize+1;i++){
             double weight = fRand(-1.0,1.0);
@@ -38,9 +39,9 @@ public:
     //somme pondéré pedict regression
     //sign
     double predict_regression(double * values){
-        double result = 0;
-        for (int i=0; i<weightSize;i++){
-            result += values[i] * model[i];
+        double result = model[0];
+        for (int i=0; i<weightSize-1;i++){
+            result += values[i] * model[i + 1];
         }
         return result;
     }
@@ -156,15 +157,15 @@ public:
 
 
    Model* create(int indiceNumber){
-      Model model = Model(indiceNumber);
-      return &model;
+      auto model = new Model(indiceNumber);
+      return model;
    }
 
-   int train_classif(Model* model,double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
+   void train_classif(Model* model,double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch) {
         model->train_classification(dataset,expected_output,sizedataset,pas,sizeIndice,epoch);
    }
 
-    int train_regression(Model* model,double ** dataset,double ** expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
+    void train_regression(Model* model,double ** dataset,double ** expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
         model->train_regression(dataset,expected_output,sizedataset,pas,sizeIndice,epoch);
     }
 
@@ -203,11 +204,11 @@ public:
         double * res = sliceDoubleArray(0,2,trainingInputs,4);
         double tkt = res[1];
         double predict[2]={33,35};
-        //train_regression(model,trainingInputs)
-        /*model->printmodel();
+        /*
+        model->printmodel();
         train_classif(model, trainingInputs, trainingExpectedOutputs, 2, 0.01,  2, 1);
         model->printmodel();*/
-        //printf("%f",model->predict_regression(predict))    ;
+        printf("%f",model->predict_regression(predict))    ;
     }
 
 }
