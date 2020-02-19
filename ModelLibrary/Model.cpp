@@ -8,6 +8,7 @@
 #include <time.h>
 #include <cmath>
 #include "Eigen/Dense"
+#include <iostream>
 using namespace std;
 using namespace Eigen;
 
@@ -50,12 +51,13 @@ public:
 
     void printmodel(){
 
-
+        printf("--- Affichage model ----- \n");
         for(int i =0;i<weightSize;i++){
-            printf("%d",model[i]);
+            //printf("poid %d : %f \n",i,model[i]);
+            cout << "poid "<< i<< ":   " << model[i] << endl;
         }
         printf("\n");
-
+        printf("----------------------------------- \n");
     }
 
     void train_classification(double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
@@ -80,10 +82,26 @@ public:
         }
     }
 
-    void train_regression(double ** dataset,double ** expected_output,int sizedataset,double pas,int sizeIndice,int epoch) {
-       // (Transpose(X)*X)Y
-       auto input_matrix = array_to_matrix(dataset,sizedataset);
-        (((input_matrix.transpose()*input_matrix).inverse())*input_matrix.transpose());
+    void train_regression(double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch) {
+       // (Transpose(X)*X)Y {x1,z1,x2,z2}
+       int size= sizedataset/sizeIndice;
+        MatrixXd X(size, sizeIndice + 1);
+        for(int i = 0; i < size; i++){
+            X(i, 0) = 1;
+            for(int j = 1; j < sizeIndice + 1; j++){
+                X(i,j) = dataset[i * sizeIndice + j - 1];
+            }
+        }
+
+        MatrixXd Y(size,  1);
+            for(int j = 0; j < size; j++){
+                Y(j,0) = expected_output[j];
+            }
+
+        MatrixXd result = (((X.transpose()*X).inverse())*X.transpose())*Y;
+            for(int i = 0;i<sizeIndice+1;i++){
+                weightSize = result(i,0);
+            }
     }
 
         double fRand(double fMin, double fMax)
@@ -137,9 +155,9 @@ public:
 };
 
 
-   Model create(int indiceNumber){
-      auto model = Model(indiceNumber);
-      return model;
+   Model* create(int indiceNumber){
+      Model model = Model(indiceNumber);
+      return &model;
    }
 
    int train_classif(Model* model,double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
@@ -185,11 +203,11 @@ public:
         double * res = sliceDoubleArray(0,2,trainingInputs,4);
         double tkt = res[1];
         double predict[2]={33,35};
-        /*
-        model->printmodel();
+        //train_regression(model,trainingInputs)
+        /*model->printmodel();
         train_classif(model, trainingInputs, trainingExpectedOutputs, 2, 0.01,  2, 1);
         model->printmodel();*/
-        printf("%f",model->predict_regression(predict))    ;
+        //printf("%f",model->predict_regression(predict))    ;
     }
 
 }
