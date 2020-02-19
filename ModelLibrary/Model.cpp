@@ -142,11 +142,11 @@ public:
       return model;
    }
 
-   int train_classif(Model* model,double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
+   void train_classif(Model* model,double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch)
         model->train_classification(dataset,expected_output,sizedataset,pas,sizeIndice,epoch);
    }
 
-    int train_regression(Model* model,double ** dataset,double ** expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
+    void train_regression(Model* model,double ** dataset,double ** expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
         model->train_regression(dataset,expected_output,sizedataset,pas,sizeIndice,epoch);
     }
 
