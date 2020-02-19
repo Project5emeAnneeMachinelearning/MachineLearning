@@ -111,7 +111,7 @@ public:
 
         MatrixXd result = (((X.transpose()*X).inverse())*X.transpose())*Y;
             for(int i = 0;i<sizeIndice+1;i++){
-                weightSize = result(i,0);
+                model[i] = result(i,0);
             }
     }
 
@@ -184,15 +184,15 @@ public:
     int main(int argc, char **argv) {
         auto model = new Model(2);
 
-        double trainingInputs[6]={33,35,34,37,43,28};
+        double trainingInputs[6]={34,37,43,28,33,35};
         double trainingExpectedOutputs[3] ={1,-1,1};
         double * res = sliceDoubleArray(0,2,trainingInputs,4);
         //double tkt = res[1];
         //double predict[2]={33,35};
 
         model->printmodel();
-        //train_regression(model, trainingInputs, trainingExpectedOutputs, 4,  2);
-        train_classif(model, trainingInputs, trainingExpectedOutputs, 6, 0.01,  2, 100000000);
+        train_regression(model, trainingInputs, trainingExpectedOutputs, 6,  2);
+        //train_classif(model, trainingInputs, trainingExpectedOutputs, 6, 0.01,  2, 100);
         //model->pre
         model->printmodel();
         //printf("%f",model->predict_lineaire(predict))    ;
