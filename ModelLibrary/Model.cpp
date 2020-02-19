@@ -83,11 +83,11 @@ public:
         }
     }
 
-    void train_regression(double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch) {
+    void train_regression(double * dataset,double * expected_output,int sizedataset,int sizeIndice) {
        // (Transpose(X)*X)Y {x1,z1,x2,z2}
        int size= sizedataset/sizeIndice;
-        MatrixXd X(size, sizeIndice + 1);
-        for(int i = 0; i < size; i++){
+       MatrixXd X(size, sizeIndice + 1);
+       for(int i = 0; i < size; i++){
             X(i, 0) = 1;
             for(int j = 1; j < sizeIndice + 1; j++){
                 X(i,j) = dataset[i * sizeIndice + j - 1];
@@ -98,7 +98,6 @@ public:
             for(int j = 0; j < size; j++){
                 Y(j,0) = expected_output[j];
             }
-
         MatrixXd result = (((X.transpose()*X).inverse())*X.transpose())*Y;
             for(int i = 0;i<sizeIndice+1;i++){
                 weightSize = result(i,0);
@@ -153,6 +152,10 @@ public:
         return mat;
     }
 
+    void print_matrix(MatrixXd mat){
+        cout <<  mat << endl;
+    }
+
 };
 
 
@@ -165,8 +168,8 @@ public:
         model->train_classification(dataset,expected_output,sizedataset,pas,sizeIndice,epoch);
    }
 
-    void train_regression(Model* model,double ** dataset,double ** expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
-        model->train_regression(dataset,expected_output,sizedataset,pas,sizeIndice,epoch);
+    void train_regression(Model* model,double * dataset,double * expected_output,int sizedataset,int sizeIndice){
+        model->train_regression(dataset,expected_output,sizedataset,sizeIndice);
     }
 
     int predict_regression(Model* model ,double * values){
@@ -204,11 +207,12 @@ public:
         double * res = sliceDoubleArray(0,2,trainingInputs,4);
         double tkt = res[1];
         double predict[2]={33,35};
-        /*
+
         model->printmodel();
-        train_classif(model, trainingInputs, trainingExpectedOutputs, 2, 0.01,  2, 1);
-        model->printmodel();*/
-        printf("%f",model->predict_regression(predict))    ;
+        train_regression(model, trainingInputs, trainingExpectedOutputs, 4,  2);
+        //train_classif(model, trainingInputs, trainingExpectedOutputs, 2, 0.01,  2, 1);
+        model->printmodel();
+       // printf("%f",model->predict_regression(predict))    ;
     }
 
 }
