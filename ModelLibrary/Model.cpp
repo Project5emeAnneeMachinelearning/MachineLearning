@@ -142,7 +142,7 @@ public:
       return model;
    }
 
-   void train_classif(Model* model,double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch)
+   void train_classif(Model* model,double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch) {
         model->train_classification(dataset,expected_output,sizedataset,pas,sizeIndice,epoch);
    }
 
