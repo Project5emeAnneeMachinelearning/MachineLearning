@@ -31,7 +31,7 @@ public:
         this->model = new double[weightSize + 1];
 //        this->model = (double *) malloc(sizeof(double) * (weightSize + 1));
         this->weightSize = weightSize+1;
-        for(int i =0;i<weightSize+1;i++){
+        for(int i =0;i<this->weightSize;i++){
             double weight = fRand(-1.0,1.0);
             this->model[i] =weight;
         }
@@ -47,9 +47,18 @@ public:
     }
 
     double predict_lineaire(double * values){
-        return signbit(predict_regression(values));
+        return predict_regression(values) > 0 ? 1 : -1;
     }
 
+
+    void print_array(double * array,int size){
+        cout << "array";
+        for(int i=0;i<size;i++){
+            cout << " "<<array[i] <<" " ;
+        }
+        cout <<endl;
+
+    }
     void printmodel(){
 
         printf("--- Affichage model ----- \n");
@@ -69,17 +78,19 @@ public:
         // V4 + (double * V4)
         //          V4
         for(int j=0 ;j<epoch;j++) {
-            for (int i = 0; i < sizedataset/sizeIndice; i++) {
+                int example = rand()% sizedataset/sizeIndice;
                 double * array = (double *)malloc(sizeIndice+1*sizeof(double));
-                array[0]=0;
+                array[0]=1;
                 for(int z=0;z<sizeIndice;z++){
-                    array[z+1] = dataset[i*sizeIndice+z];
+                    array[z+1] = dataset[example*sizeIndice+z];
                 }
+                print_array(array,sizeIndice+1);
                 double *modelAlteration = array_multiply(array,
-                                                         pas * (expected_output[i] - predict_regression(array)),
-                                                         sizeIndice);
-                model = array_addition(model, modelAlteration, sizeIndice);
-            }
+                                                         pas * (expected_output[example] - predict_lineaire(array)),
+                                                         sizeIndice+1);
+                ;
+                model = array_addition(model, modelAlteration, sizeIndice+1);
+                //print_array(modelAlteration,sizeIndice+1);
         }
     }
 
@@ -98,6 +109,7 @@ public:
             for(int j = 0; j < size; j++){
                 Y(j,0) = expected_output[j];
             }
+
         MatrixXd result = (((X.transpose()*X).inverse())*X.transpose())*Y;
             for(int i = 0;i<sizeIndice+1;i++){
                 weightSize = result(i,0);
@@ -139,18 +151,6 @@ public:
         }
     }
 
-
-    MatrixXd array_to_matrix(double** arr, int len) {
-
-        MatrixXd mat = MatrixXd(len / 2, 3);
-
-        for(int i= 0; i<len;i++)
-        {
-            mat << Vector3d(arr[i][0], arr[i][1], arr[i][2]);
-        }
-
-        return mat;
-    }
 
     void print_matrix(MatrixXd mat){
         cout <<  mat << endl;
@@ -202,17 +202,18 @@ public:
     int main(int argc, char **argv) {
         auto model = new Model(2);
 
-        double trainingInputs[4]={33,35,34,37};
-        double trainingExpectedOutputs[2] ={12,11};
+        double trainingInputs[6]={33,35,34,37,43,28};
+        double trainingExpectedOutputs[3] ={1,-1,1};
         double * res = sliceDoubleArray(0,2,trainingInputs,4);
-        double tkt = res[1];
-        double predict[2]={33,35};
+        //double tkt = res[1];
+        //double predict[2]={33,35};
 
         model->printmodel();
-        train_regression(model, trainingInputs, trainingExpectedOutputs, 4,  2);
-        //train_classif(model, trainingInputs, trainingExpectedOutputs, 2, 0.01,  2, 1);
+        //train_regression(model, trainingInputs, trainingExpectedOutputs, 4,  2);
+        train_classif(model, trainingInputs, trainingExpectedOutputs, 6, 0.01,  2, 100);
+        //model->pre
         model->printmodel();
-       // printf("%f",model->predict_regression(predict))    ;
+        //printf("%f",model->predict_lineaire(predict))    ;
     }
 
 }
