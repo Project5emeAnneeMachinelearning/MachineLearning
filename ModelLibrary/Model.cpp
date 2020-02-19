@@ -27,7 +27,8 @@ public:
     // TOUTE LES FONCTIONS DOIVENT AVOIR LE POINTEUR DU MODEL POUR POUVOIR LE MODIFIER
     Model(int weightSize){
         srand(time(NULL));
-        this->model = (double *) malloc(sizeof(int*) * weightSize + 1);
+        this->model = new double[weightSize + 1];
+//        this->model = (double *) malloc(sizeof(double) * (weightSize + 1));
         this->weightSize = weightSize+1;
         for(int i =0;i<weightSize+1;i++){
             double weight = fRand(-1.0,1.0);
@@ -37,9 +38,9 @@ public:
     //somme pondéré pedict regression
     //sign
     double predict_regression(double * values){
-        double result = 0;
-        for (int i=0; i<weightSize;i++){
-            result += values[i] * model[i];
+        double result = model[0];
+        for (int i=0; i<weightSize-1;i++){
+            result += values[i] * model[i + 1];
         }
         return result;
     }
@@ -137,8 +138,8 @@ public:
 };
 
 
-   Model create(int indiceNumber){
-      auto model = Model(indiceNumber);
+   Model* create(int indiceNumber){
+      auto model = new Model(indiceNumber);
       return model;
    }
 
