@@ -48,7 +48,17 @@ public:
         return signbit(predict_regression(values));
     }
 
-    void train_classification(double ** dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
+    void printmodel(){
+
+
+        for(int i =0;i<weightSize;i++){
+            printf("%d",model[i]);
+        }
+        printf("\n");
+
+    }
+
+    void train_classification(double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
         // pour X iter
         //  Appliquer regle de rosenblatt
         // k étant un echantillon
@@ -56,10 +66,14 @@ public:
         // V4 + (double * V4)
         //          V4
         for(int j=0 ;j<epoch;j++) {
-            for (int i = 0; i < sizedataset; i++) {
-                dataset[i] = add_biais(dataset[i], sizeIndice);
-                double *modelAlteration = array_multiply(dataset[i],
-                                                         pas * (expected_output[i] - predict_regression(dataset[i])),
+            for (int i = 0; i < sizedataset/sizeIndice; i++) {
+                double * array = (double *)malloc(sizeIndice+1*sizeof(double));
+                array[0]=0;
+                for(int z=0;z<sizeIndice;z++){
+                    array[z+1] = dataset[i*sizeIndice+z];
+                }
+                double *modelAlteration = array_multiply(array,
+                                                         pas * (expected_output[i] - predict_regression(array)),
                                                          sizeIndice);
                 model = array_addition(model, modelAlteration, sizeIndice);
             }
@@ -84,7 +98,7 @@ public:
     }
 
     double* array_addition(double* array1,double* array2,int size){
-        double result[size];
+        double * result = (double*)malloc(sizeof(double)*size);
         for(int i =0;i<size;i++){
             result[i] = array1[i] + array2[i];
         }
@@ -92,7 +106,7 @@ public:
     }
 
     double* array_multiply(double * array1,double factor,int size){
-        double result[size];
+        double * result = (double*)malloc(sizeof(double)*size);
         for(int i =0;i<size;i++){
             result[i] = array1[i]*factor;
         }
@@ -106,6 +120,8 @@ public:
             result[i+1] = array[i];
         }
     }
+
+
     MatrixXd array_to_matrix(double** arr, int len) {
 
         MatrixXd mat = MatrixXd(len / 2, 3);
@@ -126,7 +142,7 @@ public:
       return model;
    }
 
-   int train_classif(Model* model,double ** dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
+   int train_classif(Model* model,double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
         model->train_classification(dataset,expected_output,sizedataset,pas,sizeIndice,epoch);
    }
 
@@ -142,7 +158,38 @@ public:
         return model->predict_lineaire(values);
     }
 
-    int main(int argc, char **argv) {
-        printf("coucou");
+    double* sliceDoubleArray(int start, int end, double* arr, int len) {
+
+        int cmpt = 0;
+        double* res = new double[end - start + 1];
+        for (size_t i = 0; i < len; i++)
+        {
+            if (i >= start) {
+                res[cmpt] = arr[i];
+                cmpt++;
+            }
+
+            if (i > end) {
+                return res;
+            }
+        }
+        return NULL;
     }
+
+
+    int main(int argc, char **argv) {
+        auto model = new Model(2);
+
+        double trainingInputs[4]={33,35,34,37};
+        double trainingExpectedOutputs[2] ={12,11};
+        double * res = sliceDoubleArray(0,2,trainingInputs,4);
+        double tkt = res[1];
+        double predict[2]={33,35};
+        /*
+        model->printmodel();
+        train_classif(model, trainingInputs, trainingExpectedOutputs, 2, 0.01,  2, 1);
+        model->printmodel();*/
+        printf("%f",model->predict_regression(predict))    ;
+    }
+
 }
