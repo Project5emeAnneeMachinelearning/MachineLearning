@@ -23,6 +23,8 @@ using namespace Eigen;
     Model::Model(int weightSize){
         srand(time(NULL));
         this->model = new double[weightSize + 1];
+        this->delta = 0;
+        this->previousResult= 0;
 //        this->model = (double *) malloc(sizeof(double) * (weightSize + 1));
         this->weightSize = weightSize+1;
         for(int i =0;i<this->weightSize;i++){
@@ -78,11 +80,10 @@ using namespace Eigen;
                     array[z+1] = dataset[example*sizeIndice+z];
                 }
                  array_multiply(array,
-                                                         pas * (expected_output[example] - predict_lineaire(array)),
-                                                         sizeIndice+1);
+                           pas * (expected_output[example] - predict_lineaire(array)),
+                                             sizeIndice+1);
                 ;
                 array_addition(model, array, sizeIndice+1);
-               
         }
     }
 

@@ -28,25 +28,12 @@ void train_regression(Model* model,double * dataset,double * expected_output,int
     model->train_regression(dataset,expected_output,sizedataset,sizeIndice);
 }
 
-int predict_regression(Model* model ,double * values){
+double predict_regression(Model* model ,double * values){
     return model->predict_regression(values);
 }
 
-int predict_classif(Model* model ,double * values){
+double predict_classif(Model* model ,double * values){
     return model->predict_lineaire(values);
-}
-
-
-int main(int argc, char **argv) {
-    int layers[4] = {3,8,2,1};
-    double trainingInputs[2]={34,37};
-    MultiLayer* multiLayer = new MultiLayer(layers,4,NULL);
-    multiLayer->predict_classif(layers,4,trainingInputs,2,0);
-
-
-
-
-
 }
 
 int test_first_part(){
@@ -64,5 +51,21 @@ int test_first_part(){
     //printf("%f",model->predict_lineaire(predict));
     printf("%f",model->predict_regression(predict));
 }
+
+
+int main(int argc, char **argv) {
+    /*
+    int layers[4] = {3,8,2,1};
+    double trainingInputs[2]={34,37};
+    MultiLayer* multiLayer = new MultiLayer(layers,4,NULL);
+    multiLayer->predict_classif(layers,4,trainingInputs,2,0);
+    */
+    test_first_part();
+
+
+
+}
+
+
 
 }

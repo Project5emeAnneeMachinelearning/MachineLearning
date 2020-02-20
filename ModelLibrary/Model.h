@@ -10,8 +10,10 @@ class Model
 public:
     explicit Model(int weightSize);
 
+    double delta;
     double *model;
     int weightSize;
+    double previousResult;
 
     void array_multiply(double *array1, double factor, int size);
 
