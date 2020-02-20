@@ -6,11 +6,16 @@
 #define MACHINE_LEARNING_LIB_MULTILAYER_H
 
 
+#include "Model.h"
+
 class MultiLayer
 {
-    MultiLayer(int * layers,int size,int indiceNumber);
-
-
+public:
+    Model *** model;
+    int * layers;
+    int sizelayers;
+    explicit MultiLayer(int * layers,int size,int indiceNumber);
+    double * predict_classif(int * layers,int sizeLayers, double * inputs,int inputSize,int actualLayer);
 };
 
 

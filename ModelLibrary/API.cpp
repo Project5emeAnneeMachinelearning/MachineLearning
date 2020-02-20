@@ -5,6 +5,7 @@
 #include <cstdio>
 #include "API.h"
 #include "Model.h"
+#include "MultiLayer.h"
 
 
 extern "C" {
@@ -37,6 +38,18 @@ int predict_classif(Model* model ,double * values){
 
 
 int main(int argc, char **argv) {
+    int layers[4] = {3,8,2,1};
+    double trainingInputs[2]={34,37};
+    MultiLayer* multiLayer = new MultiLayer(layers,4,NULL);
+    multiLayer->predict_classif(layers,4,trainingInputs,2,0);
+
+
+
+
+
+}
+
+int test_first_part(){
     auto model = new Model(2);
     double trainingInputs[6]={34,37,43,28,33,35};
     double trainingExpectedOutputs[3] ={1,-1,1};
