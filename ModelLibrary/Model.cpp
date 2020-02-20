@@ -154,7 +154,7 @@ public:
         model->train_regression(dataset,expected_output,sizedataset,sizeIndice);
     }
 
-    int predict_regression(Model* model ,double * values){
+    double predict_regression(Model* model ,double * values){
        return model->predict_regression(values);
    }
 
