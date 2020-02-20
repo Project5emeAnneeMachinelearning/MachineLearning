@@ -158,7 +158,7 @@ public:
        return model->predict_regression(values);
    }
 
-    int predict_classif(Model* model ,double * values){
+    double predict_classif(Model* model ,double * values){
         return model->predict_lineaire(values);
     }
 
