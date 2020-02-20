@@ -54,15 +54,19 @@ int test_first_part(){
 
 
 int main(int argc, char **argv) {
-    /*
+    double* result;
     int layers[4] = {3,8,2,1};
     double trainingInputs[2]={34,37};
+    int res = 1;
     MultiLayer* multiLayer = new MultiLayer(layers,4,NULL);
-    multiLayer->predict_classif(layers,4,trainingInputs,2,0);
-    */
-    test_first_part();
-
-
+    result = multiLayer->predict_regress(layers,4,trainingInputs,2,0);
+    multiLayer->propagArriere(result[0],res);
+    //multiLayer->propagAvant(result[0]);
+    multiLayer->training(layers,4,trainingInputs,2,res,0.1);
+    printf("%f \n", result[0]);
+    double * result2 = multiLayer->truePredict(layers,4,trainingInputs,2,0);
+    printf("%f", result2[0]);
+    //test_first_part();
 
 }
 

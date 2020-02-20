@@ -16,13 +16,14 @@ public:
     int sizelayers;
     int sizelayersFixed;
     int * layersFixed;
-    double * propagArriere();
+    double *truePredict(int * layersArray,int sizeLayers, double * inputs,int inputSize,int actualLayer);
+    double *  training(int * layers,int sizeLayers, double * inputs,int inputSize,double awaitres,double pas);
     explicit MultiLayer(int * layers,int size,int indiceNumber);
     double recurse_weight_delta(int layerNumber, int modelNumber);
-    double calc_delta(int layerNumber,int modelNumber);
-    double * propagArriere(double res);
-    double * propagAvant();
-    double * predict_classif(int * layers,int sizeLayers, double * inputs,int inputSize,int actualLayer);
+    double calc_delta(int layerNumber,int modelNumber,double await_res);
+    void propagArriere(double res,double awaitres);
+    double * propagAvant(int * layersArray,int sizeLayers,double pas,double * inputs,double awaitres);
+    double * predict_regress(int * layers,int sizeLayers, double * inputs,int inputSize,int actualLayer);
 };
 
 
