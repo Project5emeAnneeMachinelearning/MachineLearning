@@ -9,24 +9,18 @@
 #include <cmath>
 #include "Eigen/Dense"
 #include <iostream>
+
 using namespace std;
 using namespace Eigen;
 
-extern "C"{
-   int GiveMe42FromC() {
-         return 42;
-    }
 
 
 
-class Model {
-public:
-    // NB DENTREE +1
-    double* model;
-    int weightSize;
+
+
     //Créee un tableau de poid entre -1 et 1 Random ??
     // TOUTE LES FONCTIONS DOIVENT AVOIR LE POINTEUR DU MODEL POUR POUVOIR LE MODIFIER
-    Model(int weightSize){
+    Model::Model(int weightSize){
         srand(time(NULL));
         this->model = new double[weightSize + 1];
 //        this->model = (double *) malloc(sizeof(double) * (weightSize + 1));
@@ -36,9 +30,8 @@ public:
             this->model[i] =weight;
         }
     }
-    //somme pondéré pedict regression
-    //sign
-    double predict_regression(double * values){
+
+    double Model::predict_regression(double * values){
         double result = model[0];
         for (int i=0; i<weightSize-1;i++){
             result += values[i] * model[i + 1];
@@ -46,12 +39,12 @@ public:
         return result;
     }
 
-    double predict_lineaire(double * values){
+    double Model::predict_lineaire(double * values){
         return predict_regression(values) > 0 ? 1 : -1;
     }
 
 
-    void print_array(double * array,int size){
+    void Model::print_array(double * array,int size){
         cout << "array";
         for(int i=0;i<size;i++){
             cout << " "<<array[i] <<" " ;
@@ -59,7 +52,7 @@ public:
         cout <<endl;
 
     }
-    void printmodel(){
+    void Model::printmodel(){
 
         printf("--- Affichage model ----- \n");
         for(int i =0;i<weightSize;i++){
@@ -70,7 +63,7 @@ public:
         printf("----------------------------------- \n");
     }
 
-    void train_classification(double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
+    void Model::train_classification(double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch){
         // pour X iter
         //  Appliquer regle de rosenblatt
         // k étant un echantillon
@@ -93,7 +86,7 @@ public:
         }
     }
 
-    void train_regression(double * dataset,double * expected_output,int sizedataset,int sizeIndice) {
+    void Model::train_regression(double * dataset,double * expected_output,int sizedataset,int sizeIndice) {
        // (Transpose(X)*X)Y {x1,z1,x2,z2}
        int size= sizedataset/sizeIndice;
        MatrixXd X(size, sizeIndice + 1);
@@ -115,87 +108,28 @@ public:
             }
     }
 
-        double fRand(double fMin, double fMax)
+        double Model::fRand(double fMin, double fMax)
     {
         double f = (double)rand() / RAND_MAX;
         return fMin + f * (fMax - fMin);
     }
 
-    double sigmoid(double x)
-    {
-        return 1.0 / (1.0 + exp(-x));
-    }
 
-    void array_addition(double* array1,double* array2,int size){
+    void Model::array_addition(double* array1,double* array2,int size){
         for(int i =0;i<size;i++){
             array1[i] += array2[i];
         }
     }
 
-    void array_multiply(double * array1,double factor,int size){
+    void Model::array_multiply(double * array1,double factor,int size){
 
         for(int i =0;i<size;i++){
             array1[i] = array1[i]*factor;
         }
     }
-};
 
 
-   Model* create(int indiceNumber){
-      auto model = new Model(indiceNumber);
-      return model;
-   }
-
-   void train_classif(Model* model,double * dataset,double * expected_output,int sizedataset,double pas,int sizeIndice,int epoch) {
-        model->train_classification(dataset,expected_output,sizedataset,pas,sizeIndice,epoch);
-   }
-
-    void train_regression(Model* model,double * dataset,double * expected_output,int sizedataset,int sizeIndice){
-        model->train_regression(dataset,expected_output,sizedataset,sizeIndice);
-    }
-
-    int predict_regression(Model* model ,double * values){
-       return model->predict_regression(values);
-   }
-
-    int predict_classif(Model* model ,double * values){
-        return model->predict_lineaire(values);
-    }
-
-    double* sliceDoubleArray(int start, int end, double* arr, int len) {
-
-        int cmpt = 0;
-        double* res = new double[end - start + 1];
-        for (size_t i = 0; i < len; i++)
-        {
-            if (i >= start) {
-                res[cmpt] = arr[i];
-                cmpt++;
-            }
-
-            if (i > end) {
-                return res;
-            }
-        }
-        return NULL;
-    }
 
 
-    int main(int argc, char **argv) {
-        auto model = new Model(2);
 
-        double trainingInputs[6]={34,37,43,28,33,35};
-        double trainingExpectedOutputs[3] ={1,-1,1};
-        double * res = sliceDoubleArray(0,2,trainingInputs,4);
-        //double tkt = res[1];
-        //double predict[2]={33,35};
 
-        model->printmodel();
-        train_regression(model, trainingInputs, trainingExpectedOutputs, 6,  2);
-        //train_classif(model, trainingInputs, trainingExpectedOutputs, 6, 0.01,  2, 100);
-        //model->pre
-        model->printmodel();
-        //printf("%f",model->predict_lineaire(predict))    ;
-    }
-
-}
