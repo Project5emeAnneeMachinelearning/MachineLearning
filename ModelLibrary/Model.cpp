@@ -73,17 +73,27 @@ using namespace Eigen;
         // V4 + (double * V4)
         //          V4
         for(int j=0 ;j<epoch;j++) {
-                int example = rand()% sizedataset/sizeIndice;
-                double array[sizeIndice+1];
-                array[0]=1;
-                for(int z=0;z<sizeIndice;z++){
-                    array[z+1] = dataset[example*sizeIndice+z];
+                int example = rand()% (sizedataset/sizeIndice);
+                //double array[sizeIndice+1];
+                //array[0]=1;
+                //for(int z=0;z<sizeIndice;z++){
+                //    array[z+1] = dataset[example*sizeIndice+z];
+                //}
+                auto array = dataset + example * sizeIndice;
+
+                auto semiGrad = pas * (expected_output[example] - predict_lineaire(array));
+
+                model[0] += semiGrad;
+                for (auto i = 0; i < sizeIndice; i++)
+                {
+                    model[i + 1] += semiGrad * array[i];
                 }
-                 array_multiply(array,
-                           pas * (expected_output[example] - predict_lineaire(array)),
-                                             sizeIndice+1);
-                ;
-                array_addition(model, array, sizeIndice+1);
+
+//                 array_multiply(array,
+  //                         pas * (expected_output[example] - predict_lineaire(array)),
+    //                                         sizeIndice+1);
+      //          ;
+        //        array_addition(model, array, sizeIndice+1);
         }
     }
 
