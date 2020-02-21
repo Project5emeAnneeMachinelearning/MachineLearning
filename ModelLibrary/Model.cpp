@@ -14,10 +14,6 @@ using namespace std;
 using namespace Eigen;
 
 
-
-
-
-
     //Créee un tableau de poid entre -1 et 1 Random ??
     // TOUTE LES FONCTIONS DOIVENT AVOIR LE POINTEUR DU MODEL POUR POUVOIR LE MODIFIER
     Model::Model(int weightSize){
@@ -46,15 +42,15 @@ using namespace Eigen;
     }
 
 
-    void Model::print_array(double * array,int size){
+    void Model::print_array(double * array,int size) {
         cout << "array";
         for(int i=0;i<size;i++){
             cout << " "<<array[i] <<" " ;
         }
         cout <<endl;
-
     }
-    void Model::printmodel(){
+
+    void Model::printmodel() {
 
         printf("--- Affichage model ----- \n");
         for(int i =0;i<weightSize;i++){
